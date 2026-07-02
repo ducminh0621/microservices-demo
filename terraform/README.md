@@ -1,24 +1,13 @@
-<!-- Copyright 2022 Google LLC
+# Use Terraform to deploy Online Boutique on an EKS cluster
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License. -->
-
-# Use Terraform to deploy Online Boutique on a GKE cluster
-
-This page walks you through the steps required to deploy the [Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo) sample application on a [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) cluster using Terraform.
+This page walks you through the steps required to deploy the [Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo) sample application on an [Amazon EKS](https://aws.amazon.com/eks/) cluster using Terraform.
 
 ## Prerequisites
 
-1. [Create a new project or use an existing project](https://cloud.google.com/resource-manager/docs/creating-managing-projects#console) on Google Cloud, and ensure [billing is enabled](https://cloud.google.com/billing/docs/how-to/verify-billing-enabled) on the project.
+1. An active [AWS account](https://aws.amazon.com/) with billing enabled.
+2. [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) installed and configured (`aws configure`).
+3. [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) >= 1.0 installed.
+4. [kubectl](https://kubernetes.io/docs/tasks/tools/) installed.
 
 ## Deploy the sample application
 
@@ -34,9 +23,9 @@ This page walks you through the steps required to deploy the [Online Boutique](h
     cd microservices-demo/terraform
     ```
 
-1. Open the `terraform.tfvars` file and replace `<project_id_here>` with the [GCP Project ID](https://cloud.google.com/resource-manager/docs/creating-managing-projects?hl=en#identifying_projects) for the `gcp_project_id` variable.
+1. Open the `terraform.tfvars` file and set your preferred AWS region (default is `us-east-1`).
 
-1. (Optional) If you want to provision a [Google Cloud Memorystore (Redis)](https://cloud.google.com/memorystore) instance, you can change the value of `memorystore = false` to `memorystore = true` in this `terraform.tfvars` file.
+1. (Optional) If you want to provision an [Amazon ElastiCache (Redis)](https://aws.amazon.com/elasticache/) instance, change the value of `elasticache = false` to `elasticache = true` in this `terraform.tfvars` file.
 
 1. Initialize Terraform.
 
@@ -58,35 +47,21 @@ This page walks you through the steps required to deploy the [Online Boutique](h
 
     1. If there is a confirmation prompt, type `yes` and hit Enter/Return.
 
-    Note: This step can take about 10 minutes. Do not interrupt the process.
+    Note: This step can take about 15 minutes. Do not interrupt the process.
 
-Once the Terraform script has finished, you can locate the frontend's external IP address to access the sample application.
+Once the Terraform script has finished, you can locate the frontend's external IP address to access the sample application:
 
-- Option 1:
-
-    ```bash
-    kubectl get service frontend-external | awk '{print $4}'
-    ```
-
-- Option 2: On Google Cloud Console, navigate to "Kubernetes Engine" and then "Services & Ingress" to locate the Endpoint associated with "frontend-external".
+```bash
+kubectl get service frontend-external | awk '{print $4}'
+```
 
 ## Clean up
 
-To avoid incurring charges to your Google Cloud account for the resources used in this sample application, either delete the project that contains the resources, or keep the project and delete the individual resources.
+To avoid incurring charges to your AWS account for the resources used in this sample application, either delete the AWS resources or keep the account and delete the individual resources.
 
-To remove the individual resources created for by Terraform without deleting the project:
+To remove the individual resources created by Terraform:
 
 1. Navigate to the `terraform/` directory.
-
-1. Set `deletion_protection` to `false` for the `google_container_cluster` resource (GKE cluster).
-
-   ```bash
-   # Uncomment the line: "deletion_protection = false"
-   sed -i "s/# deletion_protection/deletion_protection/g" main.tf
-
-   # Re-apply the Terraform to update the state
-   terraform apply
-   ```
 
 1. Run the following command:
 
