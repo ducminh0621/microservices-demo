@@ -17,9 +17,9 @@
 # Declare variables to be passed into your templates.
 
 images:
-  repository: us-central1-docker.pkg.dev/google-samples/microservices-demo
+  repository: 651706784929.dkr.ecr.ap-northeast-2.amazonaws.com/demo
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "latest"
 
 serviceAccounts:
   # Specifies whether service accounts should be created.
@@ -116,11 +116,11 @@ emailService:
 
 frontend:
   create: true
-  name: frontend
+  name: microservice
   externalService: true
   cymbalBranding: false
   # One of: local, gcp, aws, azure, onprem, alibaba. When not set, defaults to "local" unless running in GKE, otherwise auto-sets to gcp.
-  platform: local
+  platform: aws
   singleSharedSession: false
   virtualService:
     create: false
